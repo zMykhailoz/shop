@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, SetPasswordForm
 from django import forms
 
-from store.models import Profile
+from store.models import Profile, ProductRating
 
 
 class UserInfoForm(forms.ModelForm):

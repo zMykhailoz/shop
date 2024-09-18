@@ -65,9 +65,21 @@ class Product(models.Model):
     # Add Sale Stuff
     is_sale = models.BooleanField(default=False)
     sale_price = models.DecimalField(default=0, decimal_places=2, max_digits=7)
+    popularity_score = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
+
+
+class ProductPopularity(models.Model):
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
+    view_count = models.IntegerField(default=0)
+    purchase_count = models.IntegerField(default=0)
+    last_viewed = models.DateTimeField(default=datetime.datetime.now)
+
+    def update_popularity(self):
+        self.product.popularity_score = self.view_count + (self.purchase_count * 5)
+        self.product.save()
 
 
 # Customer Orders
@@ -82,3 +94,12 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{self.product.name} {self.quantity} {self.address}"
+
+
+class ProductRating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ('product', 'user')  # Ensure a user can rate a product only once

@@ -14,35 +14,74 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
                             <p class="card-text">{{ product.description }}</p>
+                            <p>Views: {{ product.productpopularity.view_count }}</p>
+                            <p>Purchases: {{ product.productpopularity.purchase_count }}</p>
+
 
                             {% if product.is_sale %}
-                                <div class="d-flex justify-content-center small text-warning mb-2">
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                </div>
+                                {#                                <div class="d-flex justify-content-center small text-warning mb-2">#}
+                                {#                                    <div class="bi-star-fill"></div>#}
+                                {#                                    <div class="bi-star-fill"></div>#}
+                                {#                                    <div class="bi-star-fill"></div>#}
+                                {#                                    <div class="bi-star-fill"></div>#}
+                                {#                                    <div class="bi-star-fill"></div>#}
+                                {#                                </div>#}
                                 <!-- Product price-->
                                 <s>{{ product.price }} $</s>
                                 {{ product.sale_price }} $
+                                <br/>
+                                <!-- Rating -->
+                                <div class="rating">
+                                    <form id="rating-form" method="POST" action="{% url 'rate_product' product.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="rating" id="rating-input"
+                                               value="{{ rating.rating|default:0 }}">
+                                        <div class="stars">
+                                            {% for i in stars %}
+                                                <span class="star" data-value="{{ i }}">&#9733;</span>
+                                            {% endfor %}
+                                        </div>
+                                        <!-- No submit button needed -->
+                                    </form>
+                                </div>
+
                             {% else %}
                                 {{ product.price }}
+
                                 <br/>
+                                <!-- Rating -->
+                                <div class="rating">
+                                    <form id="rating-form" method="POST" action="{% url 'rate_product' product.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="rating" id="rating-input"
+                                               value="{{ rating.rating|default:0 }}">
+                                        <div class="stars">
+                                            {% for i in stars %}
+                                                <span class="star" data-value="{{ i }}">&#9733;</span>
+                                            {% endfor %}
+                                        </div>
+                                        <!-- No submit button needed -->
+                                    </form>
+                                </div>
+
+
+
+
                             {% endif %}
                             <br/><br/>
-                        <div class="row justify-content-center">
-                            <div class="col-md-2">Quantity</div>
-                            <div class="col-md-2">
-                            <select class="form-select form-select-sm" aria-label="Default select example" id="qty-cart">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="3">4</option>
-                                <option value="3">5</option>
-                            </select>
+                            <div class="row justify-content-center">
+                                <div class="col-md-2">Quantity</div>
+                                <div class="col-md-2">
+                                    <select class="form-select form-select-sm" aria-label="Default select example"
+                                            id="qty-cart">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="3">4</option>
+                                        <option value="3">5</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
                             <br/><br/><br/>
                             <a href="{% url "home" %}" class="btn btn-secondary">Home</a>
                             <button type="button" value="{{ product.id }}" class="btn btn-secondary" id="add-cart">Add
@@ -77,5 +116,59 @@
                 }
             });
         })
+
+        // JavaScript for handling star rating
+        document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating-input');
+        const form = document.getElementById('rating-form');
+        let selectedRating = parseInt(ratingInput.value, 10) || 0; // Default to 0 if no rating
+
+        function updateStars(value) {
+            stars.forEach(star => {
+                if (parseInt(star.getAttribute('data-value'), 10) <= value) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        function submitRating(value) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', form.action, true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('X-CSRFToken', document.querySelector('[name="csrfmiddlewaretoken"]').value);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    selectedRating = value; // Update selectedRating on successful submission
+                    console.log('Rating submitted successfully');
+                }
+            };
+            xhr.send(`rating=${value}`);
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const value = this.getAttribute('data-value');
+                updateStars(value);
+            });
+
+            star.addEventListener('mouseout', function() {
+                updateStars(selectedRating); // Return to the selected rating
+            });
+
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                ratingInput.value = value;
+                submitRating(value);
+            });
+        });
+
+        // Update stars on page load based on selectedRating
+        updateStars(selectedRating);
+    });
     </script>
+
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from store.models import Product, Category, Order, Customer, Profile
+from store.models import Product, Category, Order, Customer, Profile, ProductPopularity, ProductRating
 from django.contrib.auth.models import User
 
 admin.site.register(Product)
@@ -8,6 +8,8 @@ admin.site.register(Category)
 admin.site.register(Order)
 admin.site.register(Customer)
 admin.site.register(Profile)
+admin.site.register(ProductPopularity)
+admin.site.register(ProductRating)
 
 
 # Mix profile info and user info
