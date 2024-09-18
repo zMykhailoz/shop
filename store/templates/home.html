@@ -1,81 +1,144 @@
+
 {% extends "base.html" %}
 {% block content %}
-        <!-- Header-->
-        <header class="bg-dark py-5">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Shop in style</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
-                </div>
+    
+    <!-- Header -->
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Shop in style</h1>
+                <p class="lead fw-normal mb-0">With this shop homepage template</p>
             </div>
-        </header>
-        <!-- Section-->
-        <section class="py-5">
-            <div class="container px-4 px-lg-5 mt-5">
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        </div>
+    </header>
 
-                    {% for product in products %}
-                        {% if product.is_sale %}
-                         <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="{{ product.image.url }}" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ product.name }}</h5>
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
+    <br/><br/>   <br/><br/>   
+    <div class="text-center">
+        <h1 class="display-4 fw-bolder">Products on Sale</h1>
+    </div>
+
+    <!-- Hidden section for products data -->
+    <div id="products-data" style="display: none;">
+        {% for product in products %}
+            {% if product.is_sale %}
+                <div class="product" 
+                     data-name="{{ product.name }}" 
+                     data-price="{{ product.price }}" 
+                     data-sale-price="{{ product.sale_price }}" 
+                     data-image-url="{{ product.image.url }}" 
+                     data-url="{% url 'product' product.id %}">
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Carousel -->
+    <div id="carouselExampleControls" class="carousel slide" >
+        <div class="carousel-inner" id="carousel-inner"></div>
+        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
+    </div>
+
+    <!-- Section -->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {% for product in products %}
+                    {% if product.is_sale %}
+                        <div class="col mb-5">
+                            <div class="card h-100">
+                                <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                                <img class="card-img-top" src="{{ product.image.url }}" alt="...">
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder">{{ product.name }}</h5>
+                                        <div class="d-flex justify-content-center small text-warning mb-2">
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                        </div>
+                                        <s>{{ product.price }} $</s> {{ product.sale_price }} $
                                     </div>
-                                    <!-- Product price-->
-                                    <s>{{ product.price }} $</s>
-                                    {{ product.sale_price }} $
+                                </div>
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id %}">View product</a></div>
                                 </div>
                             </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url "product" product.id %}">View product</a></div>
-                            </div>
                         </div>
-                    </div>
-                        {% else %}
-                     <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="{{ product.image.url }}" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ product.name }}</h5>
-                                    <!-- Product price-->
-                                    {{ product.price }} $
+                    {% else %}
+                        <div class="col mb-5">
+                            <div class="card h-100">
+                                <img class="card-img-top" src="{{ product.image.url }}" alt="...">
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder">{{ product.name }}</h5>
+                                        {{ product.price }} $
+                                    </div>
+                                </div>
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id %}">View product</a></div>
                                 </div>
                             </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url "product" product.id %}">View product</a></div>
-                            </div>
                         </div>
-                    </div>
-                        {% endif %}
-
-                    {% endfor %}
-
-
-
-
-
-
-
-                </div>
+                    {% endif %}
+                {% endfor %}
             </div>
-        </section>
+        </div>
+    </section>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const products = document.querySelectorAll('#products-data .product');
+        const carouselInner = document.getElementById('carousel-inner');
+        const itemsPerSlide = 5; // Number of items to show per slide
+        let currentIndex = 0;
+
+        function createCarouselItem(productsSlice) {
+            const carouselItem = document.createElement('div');
+            carouselItem.classList.add('carousel-item');
+            if (currentIndex === 0) {
+                carouselItem.classList.add('active');
+            }
+
+            const cardsWrapper = document.createElement('div');
+            cardsWrapper.classList.add('d-flex', 'justify-content-first', 'p-3');
+
+            productsSlice.forEach(product => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.style.width = '12rem';
+                card.innerHTML = `
+                    <img src="${product.dataset.imageUrl}" class="card-img-top" alt="${product.dataset.name}">
+                    <div class="card-body" style="text-align: center;">
+                        <h5 class="card-title">${product.dataset.name}</h5>
+                        <p class="card-text">
+                            <s>${product.dataset.price} $</s> 
+                                ${product.dataset.salePrice} $
+                        </p>
+                        <a href="${product.dataset.url}" class="btn btn-outline-secondary">View Product</a>
+                    </div>
+                `;
+                cardsWrapper.appendChild(card);
+            });
+
+            carouselItem.appendChild(cardsWrapper);
+            return carouselItem;
+        }
+
+        while (currentIndex < products.length) {
+            const productsSlice = Array.from(products).slice(currentIndex, currentIndex + itemsPerSlide);
+            const carouselItem = createCarouselItem(productsSlice);
+            carouselInner.appendChild(carouselItem);
+            currentIndex += itemsPerSlide;
+        }
+    });
+    </script>
 {% endblock %}

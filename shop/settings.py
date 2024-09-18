@@ -18,11 +18,11 @@ SECRET_KEY = 'django-insecure-ji!m8-qxu-#nxzu5uinjyz1-sv*4k^r9&s0jd(3x82tj0m7)+g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['shop-production-23f1.up.railway.app', 'https://shop-production-23f1.up.railway.app']
-CSRF_TRUSTED_ORIGINS = [
-    'https://shop-production-23f1.up.railway.app',
-]
-
+# ALLOWED_HOSTS = ['shop-production-23f1.up.railway.app', 'https://shop-production-23f1.up.railway.app']
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://shop-production-23f1.up.railway.app',
+# ]
+ALLOWED_HOSTS = []
 
 # Application definition
 
